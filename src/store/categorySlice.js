@@ -13,6 +13,5 @@ const categorySlice = createSlice({
     },
   },
 });
-
 export const { saveAllCategoryAction } = categorySlice.actions;
 export default categorySlice.reducer;
