@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import CardComponent from "../components/CardComponent";
 
-// service
-import ProductService from "../service/ProductService";
+// services
+import ProductService from "../services/ProductService";
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import saveAllProductsAction from "../store/productSlice";
+import { saveAllProductsAction } from "../store/productSlice";
 
 function HomePage() {
   const { allProducts, isLoading } = useSelector((state) => state.productStore);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -17,7 +18,7 @@ function HomePage() {
         dispatch(saveAllProductsAction(res.data.products));
       })
       .catch((err) => console.log(err));
-  }, [dispatch]);
+  }, []);
 
   return (
     <div>
