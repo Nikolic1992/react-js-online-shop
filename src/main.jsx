@@ -12,6 +12,7 @@ import store from "./store/store";
 
 // pages
 import HomePage from "./pages/HomePage";
+import SingleProductPage from "./pages/SingleProductPage";
 
 // clerk
 import { ClerkProvider } from "@clerk/clerk-react";
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "/singleProduct/:id",
+        element: <SingleProductPage />,
       },
     ],
   },
