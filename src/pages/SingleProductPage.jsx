@@ -70,7 +70,7 @@ function SingleProductPage() {
             </div>
           </div>
           {/* right side */}
-          <div className="w-full w-[50%] flex flex-col gap-[10px]">
+          <div className="w-full lg:w-[50%] flex flex-col gap-[10px]">
             <h2 className="text-mainBlue text-[36px]">{singleProduct.title}</h2>
             <h5 className="font-semibold text-[20px]">
               ${singleProduct.price}
