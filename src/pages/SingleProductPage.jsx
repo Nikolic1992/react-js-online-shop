@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ProductService from "../services/ProductService";
 import { Rating } from "@mui/material";
 
@@ -9,11 +9,17 @@ import { RxCross1 } from "react-icons/rx";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { FaShippingFast } from "react-icons/fa";
 
+// redux
+import { saveInCartAction } from "../store/cartSlice";
+import { useDispatch } from "react-redux";
+
 function SingleProductPage() {
   const [singleProduct, setSingleProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [countProduct, setCountProduct] = useState(1);
+
+  const dispatch = useDispatch();
 
   let { id } = useParams();
 
@@ -29,6 +35,11 @@ function SingleProductPage() {
   const handleImage = (index) => {
     setCurrentImage(index);
   };
+
+  const handleProductCart = () => {
+    dispatch(saveInCartAction(singleProduct));
+  };
+
   return (
     <div className="px-[20px]">
       {isLoading ? (
@@ -115,9 +126,13 @@ function SingleProductPage() {
               </div>
             </div>
             <div className="flex items-center mt-[30px] gap-[20px]">
-              <button className="bg-mainOrange text-textWhite px-[26px] py-[12px] rounded-lg">
+              <Link
+                to="/cart"
+                className="bg-mainOrange text-textWhite px-[26px] py-[12px] rounded-lg"
+                onClick={handleProductCart}
+              >
                 Add to cart
-              </button>
+              </Link>
               <div className="bg-gray-200 p-[10px] rounded-full">
                 <IoIosHeartEmpty size={30} className="cursor-pointer" />
               </div>

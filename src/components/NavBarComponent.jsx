@@ -7,13 +7,28 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
+import { useEffect, useState } from "react";
 
 // icons
-
 import { CiUser, CiHeart, CiShoppingCart } from "react-icons/ci";
+
+// redux
+import { useSelector } from "react-redux";
+
+// router
 import { Link } from "react-router-dom";
 
 function NavBarComponent() {
+  const [totalProductsLS, setTotalProductsLS] = useState(0);
+  // let totalProducts = JSON.parse(localStorage.getItem("cart_total"));
+  const { totalProducts } = useSelector((state) => state.cartStore);
+
+  useEffect(() => {
+    let lsTotal = JSON.parse(localStorage.getItem("cart_total"));
+    if (lsTotal) {
+      setTotalProductsLS(lsTotal);
+    }
+  }, [totalProducts]);
   return (
     <div className="bg-mainBlue h-full lg:h-[100px] flex items-center py-[10px]">
       <div className="container mx-auto flex justify-between items-center flex-col lg:flex-row gap-[10px]">
@@ -54,9 +69,11 @@ function NavBarComponent() {
           <div className="flex items-center gap-[5px]">
             <CiShoppingCart color="white" size={25} />
             <span className="bg-mainOrange text-textWhite w-[20px] h-[20px] flex items-center justify-center rounded-full ">
-              0
+              {totalProductsLS}
             </span>
-            <span className="text-textWhite text-[18px]">Cart</span>
+            <Link to="/cart" className="text-textWhite text-[18px]">
+              Cart
+            </Link>
           </div>
         </div>
       </div>
