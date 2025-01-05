@@ -1,3 +1,12 @@
+import { useEffect, useState } from "react";
+
+// redux
+import { useSelector } from "react-redux";
+
+// router
+import { Link } from "react-router-dom";
+
+// logo
 import logo from "../assets/logo.png";
 
 // clerk
@@ -7,26 +16,21 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
-import { useEffect, useState } from "react";
 
 // icons
 import { CiUser, CiHeart, CiShoppingCart } from "react-icons/ci";
 
-// redux
-import { useSelector } from "react-redux";
-
-// router
-import { Link } from "react-router-dom";
-
 function NavBarComponent() {
   const [totalProductsLS, setTotalProductsLS] = useState(0);
-  // let totalProducts = JSON.parse(localStorage.getItem("cart_total"));
   const { totalProducts } = useSelector((state) => state.cartStore);
+  const { favouritesTotal } = useSelector((state) => state.favouritesStore);
 
   useEffect(() => {
     let lsTotal = JSON.parse(localStorage.getItem("cart_total"));
     if (lsTotal) {
       setTotalProductsLS(lsTotal);
+    } else {
+      setTotalProductsLS(0);
     }
   }, [totalProducts]);
   return (
@@ -62,9 +66,11 @@ function NavBarComponent() {
           <div className="flex items-center gap-[5px]">
             <CiHeart color="white" size={25} />
             <span className="bg-mainOrange text-textWhite w-[20px] h-[20px] flex items-center justify-center rounded-full ">
-              0
+              {favouritesTotal}
             </span>
-            <span className="text-textWhite text-[18px]">Favourite</span>
+            <Link to="/favourites" className="text-textWhite text-[18px]">
+              Favourite
+            </Link>
           </div>
           <div className="flex items-center gap-[5px]">
             <CiShoppingCart color="white" size={25} />

@@ -13,10 +13,11 @@ import store from "./store/store";
 // pages
 import HomePage from "./pages/HomePage";
 import SingleProductPage from "./pages/SingleProductPage";
+import CartPage from "./pages/CartPage";
+import FavouritesPage from "./pages/FavouritesPage";
 
 // clerk
 import { ClerkProvider } from "@clerk/clerk-react";
-import CartPage from "./pages/CartPage";
 
 // Import your publishable key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/cart",
         element: <CartPage />,
+      },
+      {
+        path: "/favourites",
+        element: <FavouritesPage />,
       },
     ],
   },

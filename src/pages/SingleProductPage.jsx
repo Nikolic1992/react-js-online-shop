@@ -7,17 +7,22 @@ import { Rating } from "@mui/material";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosHeartEmpty } from "react-icons/io";
+import { IoIosHeart } from "react-icons/io";
 import { FaShippingFast } from "react-icons/fa";
 
 // redux
 import { saveInCartAction } from "../store/cartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateFavouritesAction } from "../store/favouritesSlice";
 
 function SingleProductPage() {
   const [singleProduct, setSingleProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [countProduct, setCountProduct] = useState(1);
+  const [favouriteIdIcon, setFavouriteIdIcon] = useState(null);
+
+  const { allFavourites } = useSelector((state) => state.favouritesStore);
 
   const dispatch = useDispatch();
 
@@ -31,6 +36,19 @@ function SingleProductPage() {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  useEffect(() => {
+    if (allFavourites.length > 0) {
+      allFavourites.find((item) => {
+        if (item.id === singleProduct.id) {
+          setFavouriteIdIcon(item.id);
+          return;
+        }
+      });
+    } else {
+      setFavouriteIdIcon(null);
+    }
+  }, [allFavourites]);
 
   const handleImage = (index) => {
     setCurrentImage(index);
@@ -134,7 +152,24 @@ function SingleProductPage() {
                 Add to cart
               </Link>
               <div className="bg-gray-200 p-[10px] rounded-full">
-                <IoIosHeartEmpty size={30} className="cursor-pointer" />
+                {favouriteIdIcon === parseInt(id) ? (
+                  <IoIosHeart
+                    size={30}
+                    color="red"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      dispatch(updateFavouritesAction(singleProduct))
+                    }
+                  />
+                ) : (
+                  <IoIosHeartEmpty
+                    size={30}
+                    className="cursor-pointer"
+                    onClick={() =>
+                      dispatch(updateFavouritesAction(singleProduct))
+                    }
+                  />
+                )}
               </div>
             </div>
 
