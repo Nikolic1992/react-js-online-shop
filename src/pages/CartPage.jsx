@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // material UI
 import Table from "@mui/material/Table";
@@ -11,16 +11,18 @@ import Paper from "@mui/material/Paper";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-
-// icons
-import { RxCross1 } from "react-icons/rx";
 import {
   deleteFromCartAction,
   setPriceHandlerAction,
 } from "../store/cartSlice";
 
+// icons
+import { RxCross1 } from "react-icons/rx";
+
 function CartPage() {
   const [cartData, setCartData] = useState([]);
+  const [activeCoupon, setActiveCoupon] = useState("");
+  const couponRef = useRef();
   const { cart, totalPrice } = useSelector((state) => state.cartStore);
 
   const dispatch = useDispatch();
@@ -31,6 +33,12 @@ function CartPage() {
 
   function handleRemoveProduct(product) {
     dispatch(deleteFromCartAction(product));
+  }
+
+  function handleApplyCoupon() {
+    setActiveCoupon(couponRef.current.value);
+
+    couponRef.current.value = "";
   }
 
   return (
@@ -119,8 +127,35 @@ function CartPage() {
         </TableContainer>
 
         <div className="w-full lg:w-[30%]">
-          <h2>Cart Total</h2>
-          <span>${totalPrice}</span>
+          <h2 className="text-textWhite bg-mainBlue py-[17px] text-center rounded-md">
+            CART TOTAL
+          </h2>
+          <span className="text-center text-[28px] font-extrabold">
+            Total price: $
+            {activeCoupon === "discount" ? totalPrice / 2 : totalPrice}
+          </span>
+          <div className="flex flex-col gap-[5px]">
+            <input
+              ref={couponRef}
+              type="text"
+              placeholder="Insert coupon"
+              className="p-[10px] border border-grayColor rounded-lg placeholder:text-mainBlue outline-none mt-[25px] "
+            />
+            <span className="text-[13px] text-grayColor">
+              Insert coupon for 50% discount
+            </span>
+            <button
+              className={
+                activeCoupon === "discount"
+                  ? "bg-grayColor text-black hover:bg-gray-500 px-[16px] py-[8px] rounded-lg transition-all duration-300 cursor-pointer mt-[30px]"
+                  : "bg-mainBlue hover:bg-mainOrange text-textWhite px-[16px] py-[8px] rounded-lg transition-all duration-300 cursor-pointer mt-[30px]"
+              }
+              onClick={handleApplyCoupon}
+              disabled={activeCoupon === "discount"}
+            >
+              {activeCoupon === "discount" ? "Coupon applied" : "Apply Coupon"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
