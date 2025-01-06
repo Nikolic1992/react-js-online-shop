@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 // redux
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { saveSearchProductAction } from "../store/productSlice";
 
 // router
 import { Link } from "react-router-dom";
@@ -22,8 +23,11 @@ import { CiUser, CiHeart, CiShoppingCart } from "react-icons/ci";
 
 function NavBarComponent() {
   const [totalProductsLS, setTotalProductsLS] = useState(0);
+  const [searchProducts, setSearchProducts] = useState("");
   const { totalProducts } = useSelector((state) => state.cartStore);
   const { favouritesTotal } = useSelector((state) => state.favouritesStore);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let lsTotal = JSON.parse(localStorage.getItem("cart_total"));
@@ -33,6 +37,12 @@ function NavBarComponent() {
       setTotalProductsLS(0);
     }
   }, [totalProducts]);
+
+  function handleSearchProducts() {
+    dispatch(saveSearchProductAction(searchProducts));
+    setSearchProducts("");
+  }
+
   return (
     <div className="bg-mainBlue h-full lg:h-[100px] flex items-center py-[10px]">
       <div className="container mx-auto flex justify-between items-center flex-col lg:flex-row gap-[10px]">
@@ -46,8 +56,13 @@ function NavBarComponent() {
             type="text"
             placeholder="Search"
             className="bg-transparent outline-none px-[25px] py-[17.5px] rounded-[20px] placeholder:text-mainOrange text-mainBlue "
+            value={searchProducts}
+            onChange={(e) => setSearchProducts(e.target.value)}
           />
-          <button className="bg-mainOrange text-textWhite px-[40px] py-[17.5px] rounded-[20px]">
+          <button
+            className="bg-mainOrange text-textWhite px-[40px] py-[17.5px] rounded-[20px]"
+            onClick={handleSearchProducts}
+          >
             Search
           </button>
         </div>

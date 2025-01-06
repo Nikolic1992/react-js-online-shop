@@ -6,6 +6,7 @@ import CategoryService from "../services/CategoryService";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
+import { saveSelectCategoryAction } from "../store/productSlice";
 
 function CategoryComponent() {
   const [toggleCategory, setToggleCategory] = useState(false);
@@ -37,17 +38,27 @@ function CategoryComponent() {
         </button>
         {isLoading ? (
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4  2xl:grid-cols-6 gap-[8px] lg:gap-[5px]">
-            {toggleCategory &&
-              allCategory.map((cat, index) => {
-                return (
-                  <li
-                    key={index}
-                    className="w-[200px] bg-mainBlue text-textWhite text-center rounded-lg px-[16px] py-[8px] hover:bg-mainOrange transition-all duration-500"
-                  >
-                    {cat}
-                  </li>
-                );
-              })}
+            {toggleCategory && (
+              <>
+                <li
+                  className="w-[200px] bg-mainBlue text-textWhite text-center rounded-lg px-[16px] py-[8px] hover:bg-mainOrange transition-all duration-500 cursor-pointer"
+                  onClick={() => dispatch(saveSelectCategoryAction(""))}
+                >
+                  All Categories
+                </li>
+                {allCategory.map((cat, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className="w-[200px] bg-mainBlue text-textWhite text-center rounded-lg px-[16px] py-[8px] hover:bg-mainOrange transition-all duration-500 cursor-pointer"
+                      onClick={() => dispatch(saveSelectCategoryAction(cat))}
+                    >
+                      {cat}
+                    </li>
+                  );
+                })}
+              </>
+            )}
           </ul>
         ) : (
           <div>Loading Category</div>

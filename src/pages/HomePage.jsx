@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CardComponent from "../components/CardComponent";
 
 // services
@@ -7,32 +7,95 @@ import ProductService from "../services/ProductService";
 import { useDispatch, useSelector } from "react-redux";
 import { saveAllProductsAction } from "../store/productSlice";
 
+// icons
+import { IoGridOutline } from "react-icons/io5";
+import { CiCircleList } from "react-icons/ci";
+
 function HomePage() {
-  const { allProducts, isLoading } = useSelector((state) => state.productStore);
+  const [isGrid, setIsGrid] = useState("gridView");
+  const [limitProducts, setLimitProducts] = useState(12);
+
+  const { allProducts, isLoading, selectCategory, searchProduct } = useSelector(
+    (state) => state.productStore
+  );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    ProductService.getAllProductsService()
-      .then((res) => {
-        dispatch(saveAllProductsAction(res.data.products));
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    if (searchProduct) {
+      ProductService.getSearchProducts(searchProduct)
+        .then((res) => {
+          dispatch(saveAllProductsAction(res.data.products));
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [searchProduct]);
+
+  useEffect(() => {
+    if (selectCategory) {
+      ProductService.getAllProductsByCategory(selectCategory)
+        .then((res) => {
+          dispatch(saveAllProductsAction(res.data.products));
+        })
+        .catch((err) => console.log(err));
+    } else {
+      ProductService.getAllProductsService(limitProducts)
+        .then((res) => {
+          dispatch(saveAllProductsAction(res.data.products));
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [selectCategory, limitProducts]);
 
   return (
     <div className="container mx-auto">
-      <div>
-        <span>List / Grid View</span>
+      <div className="flex items-center justify-end gap-[20px] py-[20px] ">
+        <CiCircleList
+          size={28}
+          onClick={() => setIsGrid("listView")}
+          className={
+            isGrid === "listView" ? "bg-mainOrange p-[2px] rounded-lg" : ""
+          }
+        />
+        <IoGridOutline
+          size={28}
+          onClick={() => setIsGrid("gridView")}
+          className={
+            isGrid === "gridView" ? "bg-mainOrange p-[2px] rounded-lg" : ""
+          }
+        />
       </div>
       {isLoading ? (
-        <div className="flex flex-wrap items-center justify-center gap-[10px]">
+        <div
+          className={
+            isGrid === "gridView"
+              ? "flex flex-wrap items-center justify-center gap-[10px] py-[50px]"
+              : "flex flex-col items-center justify-center gap-[10px]"
+          }
+        >
           {allProducts.map((product) => {
-            return <CardComponent key={product.id} product={product} />;
+            return (
+              <CardComponent
+                key={product.id}
+                product={product}
+                isGrid={isGrid}
+                setIsGrid={setIsGrid}
+              />
+            );
           })}
         </div>
       ) : (
         <div>Loading...</div>
+      )}
+      {!selectCategory && (
+        <div className="flex items-center justify-center py-[50px]">
+          <button
+            className="bg-mainBlue text-textWhite px-[16px] py-[8px] rounded-lg hover:bg-mainOrange transition-all duration-300"
+            onClick={() => setLimitProducts(limitProducts + 12)}
+          >
+            View More Products...
+          </button>
+        </div>
       )}
     </div>
   );
